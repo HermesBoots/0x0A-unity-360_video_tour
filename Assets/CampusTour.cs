@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class CampusTour : MonoBehaviour
 {
-    public Camera view3d;
-    public Camera viewUi;
+    public GameObject view;
+    public Camera camera3d;
 
     private float targetTime = 0;
     private Button target = null;
@@ -40,12 +40,13 @@ public class CampusTour : MonoBehaviour
 #endif
 
         result = Physics.Raycast(
-            this.view3d.transform.position,
-            this.view3d.transform.forward,
+            this.camera3d.transform.position,
+            this.camera3d.transform.forward,
             out cast,
             10f,
             ~LayerMask.NameToLayer("UI")
         );
+        Debug.DrawRay(this.camera3d.transform.position, this.camera3d.transform.forward);
         if (result) {
             if (this.target == null || !cast.collider.CompareTag(this.target.tag)) {
                 this.target = cast.collider.GetComponent<Button>();
@@ -88,8 +89,7 @@ public class CampusTour : MonoBehaviour
         this.room = this.rooms[button.tag];
         button.image.color = Color.white;
         this.target = null;
-        this.view3d.transform.position = this.room.transform.position;
-        this.viewUi.transform.position = this.room.transform.position;
+        this.view.transform.position = this.room.transform.position;
         this.room.SetActive(true);
     }
 
@@ -103,11 +103,8 @@ public class CampusTour : MonoBehaviour
         if (this.mouse.x >= 0) {
             angle.y = (Input.mousePosition.x - this.mouse.x) / Screen.width * 180;
             angle.x = (Input.mousePosition.y - this.mouse.y) / Screen.height * -180;
-            this.view3d.transform.Rotate(new Vector3(0, angle.y), Space.World);
-            this.view3d.transform.Rotate(new Vector3(angle.x, 0), Space.Self);
-            other = GameObject.Find("UI Camera");
-            other.transform.Rotate(new Vector3(0, angle.y), Space.World);
-            other.transform.Rotate(new Vector3(angle.x, 0), Space.Self);
+            this.view.transform.Rotate(new Vector3(0, angle.y), Space.World);
+            this.view.transform.Rotate(new Vector3(angle.x, 0), Space.Self);
         }
         this.mouse = Input.mousePosition;
     }
